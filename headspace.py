@@ -456,7 +456,7 @@ commands = dict( (k[8:],v) for k, v in globals().items() if is_command(k,v) )
 
 def main(options, args):
 
-    engine = create_engine('sqlite:///db.sqlite')
+    engine = create_engine('sqlite:///data/db.sqlite')
     Base.metadata.create_all(engine) 
     Session.configure(bind=engine)
 
