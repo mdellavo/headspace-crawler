@@ -1,0 +1,52 @@
+* Overview
+
+  Crowdsourced music playlists
+
+  
+  
+* Overview
+
+  Scrape modindex like indexes for mp3's
+  
+  seed | crawl 
+ 
+  import
+ 
+  fetch | index
+
+  working with a simple text files and pipelines
+  
+  durable - store intermediate work to text files
+
+  parallize with xargs
+
+** Data 
+
+   uid 
+   url
+   type
+   last_crawl
+   last_fetch
+   fetch_time
+   size
+   hash
+
+   artist
+   album
+   title
+   year
+   genre
+   track
+   
+** Seed
+** Crawl
+** Fetch
+   
+   fetch url
+   track how long fetch took
+   compute hash
+   store size
+
+** Index
+   
+   
