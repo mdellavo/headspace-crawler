@@ -387,6 +387,7 @@ def command_seed(options, args):
             print result
 
 def command_serve(options, args):
+    'start webserver'
 
     def search(request):
         session = Session()
