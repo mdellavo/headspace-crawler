@@ -27,7 +27,7 @@ from mutagen.id3 import ID3
 
 from pyramid.config import Configurator
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPException, HTTPNotFound, HTTPBadRequest
 from paste.httpserver import serve
 
 logging.basicConfig(level=logging.DEBUG)
@@ -62,7 +62,7 @@ class Metadata(Base):
 class Source(Base):
     __tablename__ = 'sources'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True) 
 
     status = Column(Integer, nullable=False, default=Status.ACTIVE)
     type = Column(String, nullable=False)
@@ -386,28 +386,44 @@ def command_seed(options, args):
         for result in results:
             print result
 
+
 def command_serve(options, args):
     'start webserver'
+
+    def http_exc(exc, request):
+        body = '<html><head><title>%s</title></head>' \
+            '<body><h1>%s</h1><p>%s</p></body></html>'
+        response = Response(body % (exc.title, exc.title, exc.detail))
+        response.status_int = exc.code
+        return response
 
     def search(request):
         session = Session()
 
-        q = request.GET.get('q')
-        
-        if not q:
-            return {'sources': []}
+        query  = request.GET.get('q')
+        offset = int(request.GET.get('offset', 0))
+        limit = int(request.GET.get('limit', 10))
 
-        criteria = and_( Source.hash != None,
-                         Source.data_map.any(and_(Metadata.key.in_(['title', 
-                                                                    'album',
-                                                                    'artist']),
-                                                  Metadata.value.like(q+'%'))) )
+        if not query:
+            raise HTTPBadRequest('No query given')
+
+        terms = query + '%'
+        criteria = and_(Source.hash != None,
+                        Source.data_map.any(and_(Metadata.key.in_(['title',
+                                                                   'album',
+                                                                   'artist']),
+                                                  Metadata.value.like(terms))))
 
         sources = session.query(Source)           \
                          .filter(criteria)        \
                          .options(eagerload('data_map'))
-        
-        return {'sources': sources}
+
+        return {'sources': sources,
+                'count': sources.count(),
+                'query': query,
+                'limit': limit,
+                'offset': offset,
+                'xhr': request.is_xhr}
 
     def index(request):
         return {}
@@ -419,7 +435,7 @@ def command_serve(options, args):
         source = session.query(Source).filter_by(uid=uid).first()
 
         if not source:
-            raise HTTPNotFound('Source %s not found' % uid)
+            return HTTPNotFound('Source %s not found' % uid)
 
     
         return { 'uid'  : source.uid, 
@@ -438,6 +454,7 @@ def command_serve(options, args):
     config.add_view(search, renderer='search.mako', name='search')
     config.add_route('source', 'source/{uid}', renderer='json', view=get_source)
     config.add_static_view(name='static', path='static')
+    config.add_view(http_exc, context=HTTPException)
 
     app = config.make_wsgi_app()
     serve(app, host='0.0.0.0')

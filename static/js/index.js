@@ -46,4 +46,11 @@ $(document).ready(function() {
         }
     });
 
+    $('a.more').live('click', function(){
+         $.get(this.href, function(data) {
+             $('p.more').replaceWith(data);
+         });
+        return false;
+    });
+
 });
