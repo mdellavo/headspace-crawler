@@ -1,11 +1,5 @@
 * Overview
 
-  Crowdsourced music playlists
-
-  
-  
-* Overview
-
   Scrape modindex like indexes for mp3's
   
   seed | crawl 
@@ -19,7 +13,7 @@
   durable - store intermediate work to text files
 
   parallize with xargs
-
+  
 ** Data 
 
    uid 

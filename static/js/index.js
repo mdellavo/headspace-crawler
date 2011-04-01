@@ -2,6 +2,10 @@ $(document).ready(function() {
 
     var timeout = null;
 
+    var State = {
+        
+    };
+
     function trim(i) {
         return i.replace(/^\s+|\s+$/g, '');
     }
