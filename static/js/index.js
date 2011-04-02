@@ -2,10 +2,25 @@ $(document).ready(function() {
 
     var timeout = null;
 
-    var State = {
-        
-    };
+    var player = $('#player').get(0);
 
+    $(player).bind('source-ended', function() {
+        var item = $('#playlist .playing ~ .item');
+        if(item.length)
+            $(player).trigger('play-source', item);
+    });
+
+    $(player).bind('play-source', function(e, item) {
+        $(item).addClass('playing');
+        var source = $(item).data('source');
+        $('#now-playing').html($('#now-playing-template').tmpl(source));        
+        player.src = source.url;
+    });
+
+    player.addEventListener('ended', function() {
+        $(player).trigger('source-ended');
+    });
+    
     function trim(i) {
         return i.replace(/^\s+|\s+$/g, '');
     }
@@ -16,7 +31,6 @@ $(document).ready(function() {
         if(value == '') {
             $('#results').html('');
         } else if(value.length>2) {
-
             if(timeout){
                 window.clearTimeout(timeout);
                 timeout = null;
@@ -32,11 +46,18 @@ $(document).ready(function() {
     });
 
     $('a.play').live('click', function() {
-        $.getJSON(this.href, function(data) {
-            console.log(data);
-            $('#player').attr('src', data.url);
-            
-            $('#now-playing').html($('#now-playing-template').tmpl(data.data));
+        $(player).trigger('play-source', $(this).parent('.item'));
+        return false;
+    });
+
+    $('a.add-playlist').live('click', function() {
+        $.getJSON(this.href, function(source) {
+            var item = $('#playlist-item-template').tmpl(source);
+            item.data('source', source);
+            $('#playlist').append(item);
+
+            if($('#playlist .item').length == 1)
+                $(player).trigger('play-source', item);
         });
         return false;
     });

@@ -16,7 +16,7 @@
 
 %for i, source in enumerate(sources[offset:offset+limit]):
 <div class="clear span-1 controls">
-    <a class="play" href="/source/${source.uid}">Play</a>
+    <a class="add-playlist" href="/source/${source.uid}">Play</a>
 </div>
 <div class="span-5 title">
   ${source.data.get('title', '')}

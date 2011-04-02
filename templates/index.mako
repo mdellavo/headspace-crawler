@@ -15,7 +15,7 @@
     <span id="now-playing"></span>
   </div>
 
-  <div id="playlists" class="span-8">   
+  <div id="playlist" class="span-8">   
     <audio id="player" controls="controls" 
            autoplay="autoplay" preload="auto" src=""/>
   </div>
@@ -36,8 +36,16 @@
 
 <script id="now-playing-template" type="text/x-jquery-tmpl">
 <%text>
-  Now Playing: <span class="artist">${title}</span>
-  by <span class="artist">${artist}</span>
-  from <span class="artist">${album}</span>
+  Now Playing: <span class="artist">${data.title}</span>
+  by <span class="artist">${data.artist}</span>
+  from <span class="artist">${data.album}</span>
+</%text>
+</script>
+
+<script id="playlist-item-template" type="text/x-jquery-tmpl">
+<%text>
+<div class="item">
+  <a class="play" href="/source/${uid}">${data.artist} - ${data.title}</a>
+</div>
 </%text>
 </script>
