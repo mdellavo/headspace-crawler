@@ -15,9 +15,16 @@
     <span id="now-playing"></span>
   </div>
 
-  <div id="playlist" class="span-8">   
+  <div class="span-8">
     <audio id="player" controls="controls" 
-           autoplay="autoplay" preload="auto" src=""/>
+           autoplay="autoplay" preload="auto" src=""></audio>
+    <a href="#skip-backward"  id="skip-backward">
+      <img src="/static/img/skip-backward.png"/>
+    </a>
+    <a href="#skip-foreward"  id="skip-foreward">
+      <img src="/static/img/skip-forward.png" id="skip-foreward"/>
+    </a>
+    <div id="playlist"></div>
   </div>
 
   <div class="span-16 last">
